@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import WhatsAppWidget from './WhatsAppWidget';
+import PromoPopup from './PromoPopup';
 import { motion, useScroll, useSpring } from 'motion/react';
 
 export default function Layout() {
@@ -26,6 +27,7 @@ export default function Layout() {
       </main>
       <Footer />
       <WhatsAppWidget />
+      <PromoPopup />
     </div>
   );
 }
