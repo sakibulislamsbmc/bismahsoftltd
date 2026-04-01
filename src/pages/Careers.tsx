@@ -1,8 +1,13 @@
 import { motion } from 'motion/react';
 import { Briefcase, MapPin, Clock, ArrowRight, Zap, Users, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useContentCollection } from '../hooks/useContentCollection';
 
-const jobs = [
+const iconMap: Record<string, any> = {
+  Zap, Users, Star, Clock, Briefcase
+};
+
+const defaultJobs = [
   {
     title: 'Social Media Manager',
     type: 'Full-time',
@@ -33,14 +38,16 @@ const jobs = [
   },
 ];
 
-const benefits = [
-  { title: 'Growth Opportunities', icon: Zap },
-  { title: 'Creative Environment', icon: Star },
-  { title: 'Flexible Work', icon: Clock },
-  { title: 'Collaborative Team', icon: Users },
+const defaultBenefits = [
+  { title: 'Growth Opportunities', icon: 'Zap' },
+  { title: 'Creative Environment', icon: 'Star' },
+  { title: 'Flexible Work', icon: 'Clock' },
+  { title: 'Collaborative Team', icon: 'Users' },
 ];
 
 export default function Careers() {
+  const { data: jobs } = useContentCollection('careers_jobs', defaultJobs);
+  const { data: benefits } = useContentCollection('careers_benefits', defaultBenefits);
   return (
     <div className="space-y-24 pb-24">
       {/* Hero */}
@@ -84,7 +91,10 @@ export default function Careers() {
               className="glass-card p-8 rounded-3xl text-center space-y-4 group hover:border-brand/50 transition-all"
             >
               <div className="w-16 h-16 bg-[#050B14] border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-brand group-hover:text-zinc-950 transition-all">
-                <benefit.icon className="w-8 h-8" />
+                {(() => {
+                  const Icon = iconMap[benefit.icon] || Zap;
+                  return <Icon className="w-8 h-8" />;
+                })()}
               </div>
               <h3 className="text-xl font-display font-bold uppercase tracking-tight">{benefit.title}</h3>
             </motion.div>

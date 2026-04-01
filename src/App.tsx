@@ -18,6 +18,17 @@ import Dashboard from './pages/Dashboard';
 import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminCourses from './pages/admin/AdminCourses';
+import AdminTransactions from './pages/admin/AdminTransactions';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminHomepage from './pages/admin/AdminHomepage';
+import AdminAbout from './pages/admin/AdminAbout';
+import AdminServices from './pages/admin/AdminServices';
+import AdminCareers from './pages/admin/AdminCareers';
+
 export default function App() {
   // Scroll to top on route change
   const ScrollToTop = () => {
@@ -46,6 +57,18 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
             {/* Fallback to Home */}
             <Route path="*" element={<Home />} />
+          </Route>
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="homepage" element={<AdminHomepage />} />
+            <Route path="about" element={<AdminAbout />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="careers" element={<AdminCareers />} />
+            <Route path="courses" element={<AdminCourses />} />
+            <Route path="transactions" element={<AdminTransactions />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
         </Routes>
       </Router>

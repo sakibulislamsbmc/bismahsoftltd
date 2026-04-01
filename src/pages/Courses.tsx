@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, BookOpen, Clock, Star, Users, CheckCircle2, X, QrCode, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDocs } from 'firebase/firestore';
 
-const courses = [
+export const fallbackCourses = [
   {
     id: 'graphic-design-ai',
     title: 'Advanced Graphic Design with AI Tools',
@@ -71,17 +71,43 @@ const courses = [
 
 export default function Courses() {
   const { user, openAuthModal } = useAuth();
+  const [courses, setCourses] = useState<typeof fallbackCourses>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<typeof courses[0] | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<typeof fallbackCourses[0] | null>(null);
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [pendingCourse, setPendingCourse] = useState<typeof courses[0] | null>(null);
+  const [pendingCourse, setPendingCourse] = useState<typeof fallbackCourses[0] | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'content_courses'));
+        if (!snap.empty) {
+          const data: any[] = [];
+          snap.forEach(doc => {
+            data.push({ id: doc.id, ...doc.data() });
+          });
+          setCourses(data);
+        } else {
+          setCourses(fallbackCourses);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setCourses(fallbackCourses);
+      } finally {
+        setLoadingCourses(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
     if (user && pendingCourse) {
       setSelectedCourse(pendingCourse);
       setStep(1);
@@ -90,7 +116,7 @@ export default function Courses() {
     }
   }, [user, pendingCourse]);
 
-  const openModal = async (course: typeof courses[0]) => {
+  const openModal = async (course: typeof fallbackCourses[0]) => {
     if (!user) {
       setPendingCourse(course);
       openAuthModal();
@@ -150,7 +176,8 @@ export default function Courses() {
         date: new Date().toISOString().split('T')[0],
         status: 'Pending',
         createdAt: new Date().toISOString(),
-        userId: user.uid
+        userId: user.uid,
+        courseDocId: newCourseRef.id
       });
 
       setStep(4); // Proceed to success screen
@@ -193,7 +220,7 @@ export default function Courses() {
           transition={{ delay: 0.2 }}
           className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
         >
-          Join Dismasoft Academy to learn from industry experts. Register easily with your Google account or phone number and start learning today.
+          Join Dismasoft Academy to learn from industry experts. Register easily with your username and start learning today.
         </motion.p>
       </section>
 
@@ -587,7 +614,7 @@ export default function Courses() {
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">Seamless Registration & Payment</h2>
             <p className="text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Create your account instantly using your <strong>Phone number</strong>. Once registered, you can easily purchase any course using popular Bangladeshi payment gateways.
+              Create your account instantly using your <strong>Username</strong>. Once registered, you can easily purchase any course using popular Bangladeshi payment gateways.
             </p>
             
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">

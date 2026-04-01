@@ -100,6 +100,8 @@ export default function Dashboard() {
         quality: 1.0, 
         backgroundColor: '#0A111F',
         pixelRatio: 2,
+        skipFonts: true,
+        fontEmbedCSS: '',
         style: {
           transform: 'scale(1)',
           transformOrigin: 'top left',
@@ -156,6 +158,8 @@ export default function Dashboard() {
         quality: 1.0, 
         backgroundColor: '#0A111F',
         pixelRatio: 2,
+        skipFonts: true,
+        fontEmbedCSS: '',
         style: {
           transform: 'scale(1)',
           transformOrigin: 'top left',

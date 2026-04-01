@@ -7,24 +7,19 @@ export default function AuthModal() {
   const { isAuthModalOpen, closeAuthModal, login, signup } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isAuthModalOpen) return null;
 
-  const validatePhone = (p: string) => {
-    const bdPhoneRegex = /^(?:\+?88)?01[3-9]\d{8}$/;
-    return bdPhoneRegex.test(p);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!validatePhone(phone)) {
-      setError('Please enter a valid Bangladeshi phone number.');
+    if (!username.trim()) {
+      setError('Please enter a username.');
       return;
     }
 
@@ -36,26 +31,26 @@ export default function AuthModal() {
     setIsLoading(true);
     try {
       if (isLogin) {
-        await login(phone, password);
+        await login(username, password);
       } else {
         if (!name.trim()) {
           setError('Please enter your full name.');
           setIsLoading(false);
           return;
         }
-        await signup(name, phone, password);
+        await signup(name, username, password);
       }
       closeAuthModal();
       // Reset form
-      setPhone('');
+      setUsername('');
       setPassword('');
       setName('');
     } catch (err: any) {
       console.error('Auth error:', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError('Invalid phone number or password.');
+        setError('Invalid username or password.');
       } else if (err.code === 'auth/email-already-in-use') {
-        setError('An account with this phone number already exists.');
+        setError('An account with this username already exists.');
       } else {
         setError('An error occurred. Please try again.');
       }
@@ -121,18 +116,18 @@ export default function AuthModal() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-300">Phone Number</label>
+                <label className="text-sm font-medium text-zinc-300">Username</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="w-5 h-5 text-zinc-500" />
+                    <UserIcon className="w-5 h-5 text-zinc-500" />
                   </div>
                   <input 
-                    type="tel" 
+                    type="text" 
                     required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" 
-                    placeholder="01XXXXXXXXX" 
+                    placeholder="johndoe" 
                   />
                 </div>
               </div>

@@ -2,72 +2,72 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, CheckCircle2, TrendingUp, Users, MessageSquare, Target, Zap, BarChart3, Eye, Layers, PenTool, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useContentCollection } from '../hooks/useContentCollection';
+import { teamMembers as defaultTeamMembers } from '../data/team';
 
-const services = [
+const iconMap: Record<string, any> = {
+  Users, MessageSquare, Target, TrendingUp, Zap, BarChart3, Eye, Layers, PenTool, Rocket
+};
+
+const defaultServices = [
   {
     title: 'Social Media Management',
     description: 'We handle your social media presence from A to Z, ensuring consistent engagement and growth.',
-    icon: Users,
+    icon: 'Users',
     color: 'text-blue-400',
   },
   {
     title: 'Content Creation',
     description: 'High-quality visuals and compelling copy that resonate with your local audience in Rajshahi.',
-    icon: MessageSquare,
+    icon: 'MessageSquare',
     color: 'text-purple-400',
   },
   {
     title: 'Facebook Ads',
     description: 'Targeted advertising campaigns that drive real leads and sales for your business.',
-    icon: Target,
+    icon: 'Target',
     color: 'text-pink-400',
   },
   {
     title: 'Digital Strategy',
     description: 'Data-driven roadmaps to help your business dominate the local digital landscape.',
-    icon: TrendingUp,
+    icon: 'TrendingUp',
     color: 'text-brand',
   },
 ];
 
-const features = [
-  'Local Market Expertise',
-  'Creative Content Design',
-  'Transparent Reporting',
-  'Dedicated Account Manager',
-  'Proven Growth Strategies',
-  'Affordable Pricing',
-];
-
-const methodologySteps = [
+const defaultMethodologySteps = [
   {
     id: '01',
     title: 'Discovery',
     description: 'We deep dive into your brand, target audience, and business goals.',
-    icon: Eye,
+    icon: 'Eye',
   },
   {
     id: '02',
     title: 'Strategy',
     description: 'Crafting a tailored, data-backed marketing blueprint for your growth.',
-    icon: Layers,
+    icon: 'Layers',
   },
   {
     id: '03',
     title: 'Execution',
     description: 'Rolling out creative campaigns and high-quality converting content.',
-    icon: PenTool,
+    icon: 'PenTool',
   },
   {
     id: '04',
     title: 'Optimization',
     description: 'Monitoring performance actively and scaling what works best.',
-    icon: TrendingUp,
+    icon: 'TrendingUp',
   },
 ];
 
 export default function Home() {
   const [activeStep, setActiveStep] = useState(0);
+  const { data: services } = useContentCollection('homepage_services', defaultServices);
+  const { data: methodologySteps } = useContentCollection('homepage_methodology', defaultMethodologySteps);
+  const { data: teamMembers } = useContentCollection('team_members', defaultTeamMembers);
 
   return (
     <div className="space-y-24 pb-24">
@@ -242,7 +242,10 @@ export default function Home() {
               className="glass-card p-8 rounded-3xl group hover:border-brand/50 transition-all duration-500"
             >
               <div className={`w-14 h-14 rounded-2xl bg-[#050B14] border border-zinc-800 flex items-center justify-center mb-6 group-hover:bg-brand group-hover:text-zinc-950 transition-all duration-500`}>
-                <service.icon className="w-7 h-7" />
+                {(() => {
+                  const Icon = iconMap[service.icon] || Zap;
+                  return <Icon className="w-7 h-7" />;
+                })()}
               </div>
               <h3 className="text-xl font-display font-bold uppercase tracking-tight mb-4 group-hover:text-brand transition-colors">
                 {service.title}
@@ -293,7 +296,10 @@ export default function Home() {
                     <div className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-300 ${
                       isActive ? 'bg-brand text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]' : 'bg-[#111827] text-zinc-500'
                     }`}>
-                      <step.icon className="w-5 h-5" />
+                      {(() => {
+                        const Icon = iconMap[step.icon] || Zap;
+                        return <Icon className="w-5 h-5" />;
+                      })()}
                     </div>
                     <div>
                       <h4 className="text-lg font-bold text-white mb-2">Step {step.id}: {step.title}</h4>
@@ -320,14 +326,14 @@ export default function Home() {
                   <div className="w-32 h-32 rounded-full bg-brand flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(59,130,246,0.4)] relative">
                     <div className="absolute inset-0 rounded-full bg-brand animate-ping opacity-20" />
                     {(() => {
-                      const Icon = methodologySteps[activeStep].icon;
+                      const Icon = iconMap[methodologySteps[activeStep]?.icon] || Zap;
                       return <Icon className="w-12 h-12 text-white relative z-10" />;
                     })()}
                   </div>
                   
-                  <h3 className="text-3xl font-bold text-white mb-4">{methodologySteps[activeStep].title}</h3>
+                  <h3 className="text-3xl font-bold text-white mb-4">{methodologySteps[activeStep]?.title}</h3>
                   <p className="text-zinc-400 text-lg leading-relaxed max-w-md">
-                    {methodologySteps[activeStep].description}
+                    {methodologySteps[activeStep]?.description}
                   </p>
                 </motion.div>
               </AnimatePresence>
@@ -348,26 +354,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              name: 'SAKIBUL ISLAM SABBIR',
-              title: 'CEO & Founder',
-              image: 'https://image2url.com/r2/default/images/1774957365116-b0f95152-767c-4154-a823-1f8cd92b5b18.jpeg',
-              desc: 'Dark beard, smiling slightly.',
-            },
-            {
-              name: 'NABINA NAWSHAD SHRABONI',
-              title: 'Project Manager',
-              image: 'https://image2url.com/r2/default/images/1774957874368-cd457cd9-487e-4ce6-93f5-ea60e8ee1a6c.jpeg',
-              desc: 'Beard, smiling broadly.',
-            },
-            {
-              name: 'SHAHIN ALI',
-              title: 'Web developer',
-              image: 'https://image2url.com/r2/default/images/1774958025378-e03f9f78-81cc-4b2f-8c9e-afb89be6e67e.png',
-              desc: 'Shorter beard, neutral expression.',
-            },
-          ].map((member, i) => (
+          {teamMembers.slice(0, 3).map((member, i) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 20 }}

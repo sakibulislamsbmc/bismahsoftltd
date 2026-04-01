@@ -18,7 +18,7 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, openAuthModal, logout } = useAuth();
+  const { user, userRole, openAuthModal, logout } = useAuth();
 
   const handleSignIn = () => {
     openAuthModal();
@@ -99,6 +99,16 @@ export default function Navbar() {
                           <p className="text-sm font-medium text-white truncate">{user.displayName}</p>
                           <p className="text-xs text-zinc-400 truncate">{user.email}</p>
                         </div>
+                        {(userRole === 'admin' || userRole === 'superadmin') && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="w-full text-left px-4 py-3 text-sm text-brand hover:bg-white/5 hover:text-brand-light transition-colors flex items-center space-x-2 border-b border-white/5"
+                          >
+                            <LayoutDashboard className="w-4 h-4" />
+                            <span>Admin Panel</span>
+                          </Link>
+                        )}
                         <Link
                           to="/dashboard"
                           onClick={() => setIsProfileOpen(false)}
@@ -242,6 +252,16 @@ export default function Navbar() {
                         <p className="text-xs text-zinc-400 truncate">{user.email}</p>
                       </div>
                     </div>
+                    {(userRole === 'admin' || userRole === 'superadmin') && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center space-x-2 bg-brand/10 hover:bg-brand/20 text-brand px-4 py-3 rounded-xl text-sm font-medium transition-colors w-full mb-3"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <div className="grid grid-cols-2 gap-3">
                       <Link
                         to="/dashboard"

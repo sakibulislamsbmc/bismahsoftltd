@@ -1,16 +1,23 @@
 import { motion } from 'motion/react';
 import { Target, Users, Zap, Heart, Shield, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { teamMembers } from '../data/team';
+import { teamMembers as defaultTeamMembers } from '../data/team';
+import { useContentCollection } from '../hooks/useContentCollection';
 
-const values = [
-  { title: 'Innovation', description: 'We stay ahead of digital trends to keep your business relevant.', icon: Zap },
-  { title: 'Integrity', description: 'Transparent strategies and honest reporting are our foundation.', icon: Shield },
-  { title: 'Passion', description: 'We love what we do, and it shows in the results we deliver.', icon: Heart },
-  { title: 'Excellence', description: 'We strive for perfection in every post, ad, and strategy.', icon: Award },
+const iconMap: Record<string, any> = {
+  Target, Users, Zap, Heart, Shield, Award
+};
+
+const defaultValues = [
+  { title: 'Innovation', description: 'We stay ahead of digital trends to keep your business relevant.', icon: 'Zap' },
+  { title: 'Integrity', description: 'Transparent strategies and honest reporting are our foundation.', icon: 'Shield' },
+  { title: 'Passion', description: 'We love what we do, and it shows in the results we deliver.', icon: 'Heart' },
+  { title: 'Excellence', description: 'We strive for perfection in every post, ad, and strategy.', icon: 'Award' },
 ];
 
 export default function About() {
+  const { data: values } = useContentCollection('about_values', defaultValues);
+  const { data: teamMembers } = useContentCollection('team_members', defaultTeamMembers);
   return (
     <div className="space-y-24 pb-24">
       {/* Hero */}
@@ -49,7 +56,10 @@ export default function About() {
               className="glass-card p-8 rounded-3xl text-center space-y-4 transition-all duration-500 bg-white/5 hover:bg-white/10 group-hover/values:blur-sm hover:!blur-none group-hover/values:opacity-40 hover:!opacity-100"
             >
               <div className="w-16 h-16 bg-[#050B14] border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto text-white transition-all">
-                <value.icon className="w-8 h-8" />
+                {(() => {
+                  const Icon = iconMap[value.icon] || Zap;
+                  return <Icon className="w-8 h-8" />;
+                })()}
               </div>
               <h3 className="text-xl font-display font-bold uppercase tracking-tight">{value.title}</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">{value.description}</p>

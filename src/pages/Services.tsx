@@ -1,53 +1,93 @@
 import { motion } from 'motion/react';
-import { Users, MessageSquare, Target, TrendingUp, BarChart3, Globe, Camera, PenTool } from 'lucide-react';
+import { Users, MessageSquare, Target, TrendingUp, BarChart3, Globe, Camera, PenTool, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useContentCollection } from '../hooks/useContentCollection';
 
-const services = [
+const iconMap: Record<string, any> = {
+  Users, MessageSquare, Target, TrendingUp, BarChart3, Globe, Camera, PenTool, Zap
+};
+
+const defaultServices = [
   {
     title: 'Social Media Management',
     description: 'We handle your social media presence from A to Z, ensuring consistent engagement and growth across all platforms.',
-    icon: Users,
-    features: ['Daily Posting', 'Engagement Management', 'Community Building', 'Growth Tracking'],
+    icon: 'Users',
+    features: 'Daily Posting, Engagement Management, Community Building, Growth Tracking',
     color: 'bg-blue-500/10 text-blue-400',
   },
   {
     title: 'Content Creation',
     description: 'High-quality visuals and compelling copy that resonate with your local audience in Rajshahi.',
-    icon: MessageSquare,
-    features: ['Graphic Design', 'Photography', 'Video Editing', 'Copywriting'],
+    icon: 'MessageSquare',
+    features: 'Graphic Design, Photography, Video Editing, Copywriting',
     color: 'bg-purple-500/10 text-purple-400',
   },
   {
     title: 'Facebook Ads',
     description: 'Targeted advertising campaigns that drive real leads and sales for your business with high ROI.',
-    icon: Target,
-    features: ['Audience Targeting', 'Ad Creative Design', 'A/B Testing', 'Performance Analysis'],
+    icon: 'Target',
+    features: 'Audience Targeting, Ad Creative Design, A/B Testing, Performance Analysis',
     color: 'bg-pink-500/10 text-pink-400',
   },
   {
     title: 'Digital Strategy',
     description: 'Data-driven roadmaps to help your business dominate the local digital landscape and stay ahead.',
-    icon: TrendingUp,
-    features: ['Market Research', 'Competitor Analysis', 'Campaign Planning', 'ROI Optimization'],
+    icon: 'TrendingUp',
+    features: 'Market Research, Competitor Analysis, Campaign Planning, ROI Optimization',
     color: 'bg-brand/10 text-brand',
   },
   {
     title: 'SEO Optimization',
     description: 'Improve your visibility on search engines and attract organic traffic to your business.',
-    icon: Globe,
-    features: ['Keyword Research', 'On-page SEO', 'Local SEO', 'Link Building'],
+    icon: 'Globe',
+    features: 'Keyword Research, On-page SEO, Local SEO, Link Building',
     color: 'bg-emerald-500/10 text-emerald-400',
   },
   {
     title: 'Brand Identity',
     description: 'Create a memorable and professional brand image that stands out in the market.',
-    icon: PenTool,
-    features: ['Logo Design', 'Brand Guidelines', 'Visual Identity', 'Brand Voice'],
+    icon: 'PenTool',
+    features: 'Logo Design, Brand Guidelines, Visual Identity, Brand Voice',
     color: 'bg-orange-500/10 text-orange-400',
   },
 ];
 
+const defaultPricing = [
+  {
+    name: 'Starter',
+    price: '৳15,000',
+    period: '/month',
+    desc: 'The Starter package is perfect for businesses looking to establish their online presence. It includes setting up your Facebook and Instagram pages, creating 12 branded posts per month with captions, managing basic inbox replies, and providing a monthly performance summary. It’s the ideal starting point to get your brand noticed on social media.',
+    color: 'from-blue-500/20 to-transparent',
+    borderColor: 'border-blue-500/30 hover:border-blue-500/60',
+    textColor: 'text-blue-400',
+    popular: 'false'
+  },
+  {
+    name: 'Growth',
+    price: '৳30,000',
+    period: '/month',
+    desc: 'The Growth package is designed for businesses ready to expand their reach and engage their audience consistently. It includes 20 posts per month, a mix of images and reels, with strategic branding for design. We handle community replies and offer a monthly strategy meeting along with an engagement performance report. This package is best for businesses looking to grow with clarity and consistency.',
+    color: 'from-yellow-400/20 to-transparent',
+    borderColor: 'border-yellow-400/50 hover:border-yellow-400',
+    textColor: 'text-yellow-400',
+    popular: 'true'
+  },
+  {
+    name: 'Premium',
+    price: '৳45,000',
+    period: '/month',
+    desc: 'Premium is for brands that want results through advanced strategies. In addition to everything in the Growth package, Premium includes full Facebook and Instagram ad management, campaign setup and tracking, detailed performance reporting, and advanced analytics. We also offer WhatsApp support for real-time ideas and updates. Perfect for ambitious brands looking to scale faster.',
+    color: 'from-amber-400/20 to-transparent',
+    borderColor: 'border-amber-400/30 hover:border-amber-400/60',
+    textColor: 'text-amber-400',
+    popular: 'false'
+  }
+];
+
 export default function Services() {
+  const { data: services } = useContentCollection('services_list', defaultServices);
+  const { data: pricingPlans } = useContentCollection('pricing_plans', defaultPricing);
   return (
     <div className="space-y-24 pb-24">
       {/* Hero */}
@@ -91,7 +131,10 @@ export default function Services() {
               className="glass-card p-8 rounded-[2.5rem] group hover:border-brand/50 transition-all duration-500 flex flex-col"
             >
               <div className={`w-16 h-16 rounded-2xl ${service.color} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500`}>
-                <service.icon className="w-8 h-8" />
+                {(() => {
+                  const Icon = iconMap[service.icon] || Zap;
+                  return <Icon className="w-8 h-8" />;
+                })()}
               </div>
               <h3 className="text-2xl font-display font-bold uppercase tracking-tight mb-4 group-hover:text-brand transition-colors">
                 {service.title}
@@ -100,10 +143,10 @@ export default function Services() {
                 {service.description}
               </p>
               <ul className="space-y-3 mb-8">
-                {service.features.map((feature) => (
-                  <li key={feature} className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                {String(service.features).split(',').map((feature) => (
+                  <li key={feature.trim()} className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300 transition-colors">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    <span>{feature}</span>
+                    <span>{feature.trim()}</span>
                   </li>
                 ))}
               </ul>
@@ -184,45 +227,18 @@ export default function Services() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              name: 'Starter',
-              price: '৳15,000',
-              period: '/month',
-              desc: 'The Starter package is perfect for businesses looking to establish their online presence. It includes setting up your Facebook and Instagram pages, creating 12 branded posts per month with captions, managing basic inbox replies, and providing a monthly performance summary. It’s the ideal starting point to get your brand noticed on social media.',
-              color: 'from-blue-500/20 to-transparent',
-              borderColor: 'border-blue-500/30 hover:border-blue-500/60',
-              textColor: 'text-blue-400'
-            },
-            {
-              name: 'Growth',
-              price: '৳30,000',
-              period: '/month',
-              desc: 'The Growth package is designed for businesses ready to expand their reach and engage their audience consistently. It includes 20 posts per month, a mix of images and reels, with strategic branding for design. We handle community replies and offer a monthly strategy meeting along with an engagement performance report. This package is best for businesses looking to grow with clarity and consistency.',
-              color: 'from-yellow-400/20 to-transparent',
-              borderColor: 'border-yellow-400/50 hover:border-yellow-400',
-              textColor: 'text-yellow-400',
-              popular: true
-            },
-            {
-              name: 'Premium',
-              price: '৳45,000',
-              period: '/month',
-              desc: 'Premium is for brands that want results through advanced strategies. In addition to everything in the Growth package, Premium includes full Facebook and Instagram ad management, campaign setup and tracking, detailed performance reporting, and advanced analytics. We also offer WhatsApp support for real-time ideas and updates. Perfect for ambitious brands looking to scale faster.',
-              color: 'from-amber-400/20 to-transparent',
-              borderColor: 'border-amber-400/30 hover:border-amber-400/60',
-              textColor: 'text-amber-400'
-            }
-          ].map((pkg, i) => (
+          {pricingPlans.map((pkg, i) => {
+            const isPopular = pkg.popular === 'true' || pkg.popular === true;
+            return (
             <motion.div
               key={pkg.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`relative flex flex-col text-center glass-card p-8 rounded-3xl transition-all duration-500 ${pkg.borderColor} ${pkg.popular ? 'scale-105 md:-translate-y-4 z-10 bg-[#0A111F]/80 shadow-2xl shadow-yellow-400/10' : 'bg-[#0A111F]/40'}`}
+              className={`relative flex flex-col text-center glass-card p-8 rounded-3xl transition-all duration-500 ${pkg.borderColor} ${isPopular ? 'scale-105 md:-translate-y-4 z-10 bg-[#0A111F]/80 shadow-2xl shadow-yellow-400/10' : 'bg-[#0A111F]/40'}`}
             >
-              {pkg.popular && (
+              {isPopular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-zinc-950 text-xs font-bold uppercase tracking-widest py-1 px-4 rounded-full">
                   Most Popular
                 </div>
@@ -246,7 +262,7 @@ export default function Services() {
                 <Link
                   to="/contact"
                   className={`block w-full text-center py-4 rounded-2xl border text-sm font-bold uppercase tracking-widest transition-all ${
-                    pkg.popular 
+                    isPopular 
                       ? 'bg-yellow-400 text-zinc-950 border-yellow-400 hover:bg-white hover:border-white' 
                       : 'bg-[#0A111F] text-white border-zinc-700 hover:bg-zinc-800 hover:border-zinc-600'
                   }`}
@@ -255,7 +271,7 @@ export default function Services() {
                 </Link>
               </div>
             </motion.div>
-          ))}
+          )})}
         </div>
       </section>
     </div>

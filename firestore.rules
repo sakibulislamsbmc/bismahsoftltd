@@ -3,52 +3,6 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ===============================================================
-    // Assumed Data Model
-    // ===============================================================
-    //
-    // Collection: users
-    // Document ID: {userId}
-    // Fields:
-    //   - uid: string (required) - The unique identifier for the user
-    //   - email: string (required) - The user's email address
-    //   - displayName: string (optional) - The user's display name
-    //   - photoURL: string (optional) - The URL of the user's profile photo
-    //   - createdAt: string (required) - The timestamp when the user was created
-    //   - role: string (required) - The user's role ('user' or 'admin')
-    //
-    // Collection: users/{userId}/services
-    // Document ID: {serviceId}
-    // Fields:
-    //   - id: string (required)
-    //   - name: string (required)
-    //   - status: string (required) - 'Active', 'Completed', 'Pending'
-    //   - date: string (required)
-    //   - userId: string (required)
-    //
-    // Collection: users/{userId}/courses
-    // Document ID: {courseId}
-    // Fields:
-    //   - id: string (required)
-    //   - name: string (required)
-    //   - progress: number (required)
-    //   - nextLesson: string (required)
-    //   - userId: string (required)
-    //
-    // Collection: users/{userId}/transactions
-    // Document ID: {transactionId}
-    // Fields:
-    //   - id: string (required)
-    //   - date: string (required)
-    //   - amount: number (required)
-    //   - gateway: string (required)
-    //   - status: string (required) - 'Success', 'Pending', 'Failed'
-    //   - description: string (required)
-    //   - userId: string (required)
-    //   - transactionId: string (required)
-    //
-    // ===============================================================
-
-    // ===============================================================
     // Helper Functions
     // ===============================================================
     
@@ -80,10 +34,18 @@ service cloud.firestore {
       return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
+    function isSuperAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin' ||
+          (request.auth.token.email == "sakibulislamsbmc@gmail.com") ||
+          (request.auth.token.email == "+8801345417317@bismahsoft.local"));
+    }
+
     function isAdmin() {
       return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "sakibulislamsbmc@gmail.com" && request.auth.token.email_verified == true));
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin'] ||
+          (request.auth.token.email == "sakibulislamsbmc@gmail.com") ||
+          (request.auth.token.email == "+8801345417317@bismahsoft.local"));
     }
 
     // ===============================================================
@@ -97,19 +59,7 @@ service cloud.firestore {
              (!('displayName' in data) || (data.displayName == null || (data.displayName is string && data.displayName.size() <= 100))) &&
              (!('photoURL' in data) || (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 2048))) &&
              data.createdAt is string && data.createdAt.size() > 0 &&
-             data.role in ['user', 'admin'];
-    }
-
-    function isValidTransaction(data, userId) {
-      return hasRequiredFields(['id', 'date', 'amount', 'gateway', 'status', 'description', 'userId', 'transactionId']) &&
-             data.id is string && data.id.size() > 0 && data.id.size() < 128 &&
-             data.date is string && data.date.size() > 0 &&
-             data.amount is number && data.amount >= 0 &&
-             data.gateway in ['bKash', 'Nagad', 'Rocket', 'Stripe', 'PayPal', 'Bank Transfer'] &&
-             data.status in ['Success', 'Pending', 'Failed'] &&
-             data.description is string && data.description.size() <= 500 &&
-             data.userId == userId &&
-             data.transactionId is string && data.transactionId.size() > 0 && data.transactionId.size() <= 100;
+             data.role in ['user', 'admin', 'superadmin'];
     }
 
     // ===============================================================
@@ -123,16 +73,16 @@ service cloud.firestore {
                     isOwner(userId) && 
                     isValidUser(request.resource.data) && 
                     uidUnchanged() &&
-                    ((request.resource.data.role == 'user') || isAdmin());
+                    ((request.resource.data.role == 'user') || isSuperAdmin());
                     
       allow update: if isAuthenticated() && 
                     isOwner(userId) && 
                     isValidUser(request.resource.data) && 
                     uidNotModified() &&
                     request.resource.data.createdAt == resource.data.createdAt &&
-                    ((request.resource.data.role == resource.data.role) || isAdmin());
+                    ((request.resource.data.role == resource.data.role) || isSuperAdmin());
                     
-      allow delete: if isAdmin();
+      allow delete: if isSuperAdmin();
 
       match /services/{serviceId} {
         allow read: if isOwner(userId) || isAdmin();
@@ -148,10 +98,24 @@ service cloud.firestore {
       match /transactions/{transactionId} {
         allow read: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId) && 
-                      isValidTransaction(request.resource.data, userId) &&
                       request.resource.data.status == 'Pending';
         allow update, delete: if isAdmin();
       }
     }
+
+    match /content_courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /homepage_services/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /homepage_methodology/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /about_values/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /team_members/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /services_list/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /pricing_plans/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /careers_jobs/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /careers_benefits/{docId} { allow read: if true; allow write: if isAdmin(); }
+    match /homepage_content/{docId} { allow read: if true; allow write: if isAdmin(); }
   }
 }
