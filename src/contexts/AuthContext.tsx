@@ -36,9 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (!userSnap.exists()) {
             await setDoc(userRef, {
               uid: currentUser.uid,
-              email: currentUser.email,
-              displayName: currentUser.displayName,
-              photoURL: currentUser.photoURL,
+              email: currentUser.email || '',
+              displayName: currentUser.displayName || 'User',
+              photoURL: currentUser.photoURL || '',
               createdAt: new Date().toISOString(),
               role: 'user'
             });
@@ -56,8 +56,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGoogle = async () => {
     try {
+      setLoading(true);
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
+      setLoading(false);
       console.error('Error signing in with Google', error);
       throw error;
     }

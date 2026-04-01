@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, BookOpen, Clock, Star, Users, CheckCircle2, X, QrCode, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 const courses = [
   {
@@ -79,9 +79,25 @@ export default function Courses() {
   const [transactionId, setTransactionId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const openModal = (course: typeof courses[0]) => {
+  const [pendingCourse, setPendingCourse] = useState<typeof courses[0] | null>(null);
+
+  React.useEffect(() => {
+    if (user && pendingCourse) {
+      setSelectedCourse(pendingCourse);
+      setStep(1);
+      setIsModalOpen(true);
+      setPendingCourse(null);
+    }
+  }, [user, pendingCourse]);
+
+  const openModal = async (course: typeof courses[0]) => {
     if (!user) {
-      signInWithGoogle();
+      setPendingCourse(course);
+      try {
+        await signInWithGoogle();
+      } catch (error) {
+        setPendingCourse(null);
+      }
       return;
     }
     setSelectedCourse(course);
@@ -115,23 +131,30 @@ export default function Courses() {
       const priceValue = parseFloat(selectedCourse.price.replace(/[^0-9.]/g, ''));
       
       // 1. Save Course Enrollment
-      await addDoc(collection(db, `users/${user.uid}/courses`), {
+      const newCourseRef = doc(collection(db, `users/${user.uid}/courses`));
+      await setDoc(newCourseRef, {
+        id: newCourseRef.id,
         courseId: selectedCourse.id,
-        title: selectedCourse.title,
+        name: selectedCourse.title,
         status: 'Pending Verification',
         progress: 0,
-        enrolledAt: new Date().toISOString()
+        nextLesson: 'Introduction',
+        enrolledAt: new Date().toISOString(),
+        userId: user.uid
       });
 
       // 2. Save Transaction
-      await addDoc(collection(db, `users/${user.uid}/transactions`), {
+      const newTxnRef = doc(collection(db, `users/${user.uid}/transactions`));
+      await setDoc(newTxnRef, {
+        id: newTxnRef.id,
         transactionId: transactionId,
         amount: priceValue,
         gateway: paymentMethod,
         description: `Enrollment: ${selectedCourse.title}`,
         date: new Date().toISOString().split('T')[0],
         status: 'Pending',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        userId: user.uid
       });
 
       setStep(4); // Proceed to success screen
