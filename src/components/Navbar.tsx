@@ -18,15 +18,10 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signInWithGoogle, logout } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
 
-  const handleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Failed to sign in', error);
-    }
+  const handleSignIn = () => {
+    openAuthModal();
   };
 
   useEffect(() => {
@@ -278,7 +273,7 @@ export default function Navbar() {
                     className="flex items-center justify-center space-x-2 w-full bg-white/5 hover:bg-white/10 text-white px-5 py-4 rounded-2xl font-medium transition-colors"
                   >
                     <LogIn className="w-5 h-5" />
-                    <span>Sign In with Google</span>
+                    <span>Sign In</span>
                   </button>
                 )}
               </div>

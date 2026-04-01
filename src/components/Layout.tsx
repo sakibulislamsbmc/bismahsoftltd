@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import WhatsAppWidget from './WhatsAppWidget';
 import PromoPopup from './PromoPopup';
+import AuthModal from './AuthModal';
 import { motion, useScroll, useSpring } from 'motion/react';
 
 export default function Layout() {
@@ -28,6 +29,7 @@ export default function Layout() {
       <Footer />
       <WhatsAppWidget />
       <PromoPopup />
+      <AuthModal />
     </div>
   );
 }

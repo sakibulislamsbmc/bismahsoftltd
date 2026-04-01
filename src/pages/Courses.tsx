@@ -70,7 +70,7 @@ const courses = [
 ];
 
 export default function Courses() {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<typeof courses[0] | null>(null);
   const [step, setStep] = useState(1);
@@ -93,11 +93,7 @@ export default function Courses() {
   const openModal = async (course: typeof courses[0]) => {
     if (!user) {
       setPendingCourse(course);
-      try {
-        await signInWithGoogle();
-      } catch (error) {
-        setPendingCourse(null);
-      }
+      openAuthModal();
       return;
     }
     setSelectedCourse(course);
@@ -591,7 +587,7 @@ export default function Courses() {
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">Seamless Registration & Payment</h2>
             <p className="text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Create your account instantly using your <strong>Google account</strong> or <strong>Phone number</strong>. Once registered, you can easily purchase any course using popular Bangladeshi payment gateways.
+              Create your account instantly using your <strong>Phone number</strong>. Once registered, you can easily purchase any course using popular Bangladeshi payment gateways.
             </p>
             
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
