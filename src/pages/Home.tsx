@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, CheckCircle2, TrendingUp, Users, MessageSquare, Target, Zap, BarChart3, Eye, Layers, PenTool, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -68,6 +70,40 @@ export default function Home() {
   const { data: services } = useContentCollection('homepage_services', defaultServices);
   const { data: methodologySteps } = useContentCollection('homepage_methodology', defaultMethodologySteps);
   const { data: teamMembers } = useContentCollection('team_members', defaultTeamMembers);
+
+  useEffect(() => {
+    const updateTeamMembers = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'team_members'));
+        snapshot.forEach(async (document) => {
+          const data = document.data();
+          if (data.name && data.name.toUpperCase().includes('JOHN DOE')) {
+            await updateDoc(doc(db, 'team_members', document.id), {
+              name: 'SAKIBUL ISLAM SABBIR',
+              image: 'https://image2url.com/r2/default/images/1774957365116-b0f95152-767c-4154-a823-1f8cd92b5b18.jpeg'
+            });
+          }
+          if (data.name && data.name.includes('Jane Smith')) {
+            await updateDoc(doc(db, 'team_members', document.id), {
+              name: 'NABINA NAWSHAD SHRABONI',
+              title: 'Project Manager',
+              image: 'https://image2url.com/r2/default/images/1774957874368-cd457cd9-487e-4ce6-93f5-ea60e8ee1a6c.jpeg'
+            });
+          }
+          if (data.name && data.name.includes('Mike Johnson')) {
+            await updateDoc(doc(db, 'team_members', document.id), {
+              name: 'SHAHIN ALI',
+              title: 'Web developer',
+              image: 'https://image2url.com/r2/default/images/1774958025378-e03f9f78-81cc-4b2f-8c9e-afb89be6e67e.png'
+            });
+          }
+        });
+      } catch (error) {
+        console.error("Error updating team members:", error);
+      }
+    };
+    updateTeamMembers();
+  }, []);
 
   return (
     <div className="space-y-24 pb-24">

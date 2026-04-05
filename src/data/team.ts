@@ -1,33 +1,33 @@
 export const teamMembers = [
   {
-    id: 'nahid-hossain',
-    name: 'Nahid Hossain',
-    title: 'Co-Founder',
+    id: 'sakibul-islam-sabbir',
+    name: 'SAKIBUL ISLAM SABBIR',
+    title: 'CEO & Founder',
     desc: 'Overseeing operations and strategic coordination',
-    image: 'https://picsum.photos/seed/nahid/200/200',
+    image: 'https://image2url.com/r2/default/images/1774957365116-b0f95152-767c-4154-a823-1f8cd92b5b18.jpeg',
     expertise: ['Strategic Planning', 'Operations Management', 'Business Development'],
     education: 'MBA in Business Administration',
-    social: { linkedin: '#', twitter: '#', email: 'nahid@bismahsoft.com' }
+    social: { linkedin: '#', twitter: '#', email: 'sakibul@bismahsoft.com' }
   },
   {
-    id: 'ashraful-islam',
-    name: 'Ashraful Islam',
-    title: 'Co-Founder',
+    id: 'nabina-nawshad-shraboni',
+    name: 'NABINA NAWSHAD SHRABONI',
+    title: 'Project Manager',
     desc: 'Leading the visual direction with stunning graphics',
-    image: 'https://picsum.photos/seed/ashraful/200/200',
+    image: 'https://image2url.com/r2/default/images/1774957874368-cd457cd9-487e-4ce6-93f5-ea60e8ee1a6c.jpeg',
     expertise: ['Creative Direction', 'Brand Identity', 'UI/UX Design'],
     education: 'BFA in Graphic Design',
-    social: { linkedin: '#', twitter: '#', email: 'ashraful@bismahsoft.com' }
+    social: { linkedin: '#', twitter: '#', email: 'nabina@bismahsoft.com' }
   },
   {
-    id: 'kazi-maruf',
-    name: 'Kazi Maruf',
-    title: 'Co-Founder',
+    id: 'shahin-ali',
+    name: 'SHAHIN ALI',
+    title: 'Web developer',
     desc: 'Driving targeted digital growth and engagement',
-    image: 'https://picsum.photos/seed/kazi/200/200',
+    image: 'https://image2url.com/r2/default/images/1774958025378-e03f9f78-81cc-4b2f-8c9e-afb89be6e67e.png',
     expertise: ['Digital Marketing', 'Growth Hacking', 'SEO/SEM'],
     education: 'BSc in Marketing',
-    social: { linkedin: '#', twitter: '#', email: 'kazi@bismahsoft.com' }
+    social: { linkedin: '#', twitter: '#', email: 'shahin@bismahsoft.com' }
   },
   {
     id: 'julkar-naeem',
