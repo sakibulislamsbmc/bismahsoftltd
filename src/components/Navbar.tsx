@@ -73,74 +73,8 @@ export default function Navbar() {
 
             {/* Contact & Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-4 shrink-0">
-              {user ? (
-                <div className="relative">
-                  <button 
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center space-x-2 focus:outline-none"
-                  >
-                    <img 
-                      src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}&background=random`} 
-                      alt={user.displayName || 'User'} 
-                      className="w-9 h-9 rounded-full border-2 border-brand/50 hover:border-brand transition-colors object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {isProfileOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-3 w-48 bg-[#0A111F]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 pointer-events-auto"
-                      >
-                        <div className="px-4 py-3 border-b border-white/5">
-                          <p className="text-sm font-medium text-white truncate">{user.displayName}</p>
-                          <p className="text-xs text-zinc-400 truncate">{user.email}</p>
-                        </div>
-                        {(userRole === 'admin' || userRole === 'superadmin') && (
-                          <Link
-                            to="/admin"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="w-full text-left px-4 py-3 text-sm text-brand hover:bg-white/5 hover:text-brand-light transition-colors flex items-center space-x-2 border-b border-white/5"
-                          >
-                            <LayoutDashboard className="w-4 h-4" />
-                            <span>Admin Panel</span>
-                          </Link>
-                        )}
-                        <Link
-                          to="/dashboard"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="w-full text-left px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors flex items-center space-x-2 border-b border-white/5"
-                        >
-                          <LayoutDashboard className="w-4 h-4" />
-                          <span>Dashboard</span>
-                        </Link>
-                        <button
-                          onClick={() => {
-                            logout();
-                            setIsProfileOpen(false);
-                            navigate('/');
-                          }}
-                          className="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-white/5 hover:text-red-300 transition-colors flex items-center space-x-2"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span>Sign Out</span>
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <button
-                  onClick={handleSignIn}
-                  className="text-zinc-300 hover:text-white text-sm font-medium transition-colors flex items-center space-x-2"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Sign In</span>
-                </button>
-              )}
+              {/* Auth minimized temporarily due to database issues */}
+              {/* user ? (...) : (...) */}
 
               <Link
                 to="/contact"
@@ -238,64 +172,8 @@ export default function Navbar() {
 
               {/* Auth Section at Bottom */}
               <div className="p-6 border-t border-white/5 bg-white/[0.02]">
-                {user ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <img 
-                        src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}&background=random`} 
-                        alt={user.displayName || 'User'} 
-                        className="w-12 h-12 rounded-full object-cover border-2 border-brand/30"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="overflow-hidden">
-                        <p className="text-sm font-medium text-white truncate">{user.displayName}</p>
-                        <p className="text-xs text-zinc-400 truncate">{user.email}</p>
-                      </div>
-                    </div>
-                    {(userRole === 'admin' || userRole === 'superadmin') && (
-                      <Link
-                        to="/admin"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center space-x-2 bg-brand/10 hover:bg-brand/20 text-brand px-4 py-3 rounded-xl text-sm font-medium transition-colors w-full mb-3"
-                      >
-                        <LayoutDashboard className="w-4 h-4" />
-                        <span>Admin Panel</span>
-                      </Link>
-                    )}
-                    <div className="grid grid-cols-2 gap-3">
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 text-white px-4 py-3 rounded-xl text-sm font-medium transition-colors"
-                      >
-                        <LayoutDashboard className="w-4 h-4" />
-                        <span>Dashboard</span>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setIsOpen(false);
-                          navigate('/');
-                        }}
-                        className="flex items-center justify-center space-x-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      handleSignIn();
-                      setIsOpen(false);
-                    }}
-                    className="flex items-center justify-center space-x-2 w-full bg-white/5 hover:bg-white/10 text-white px-5 py-4 rounded-2xl font-medium transition-colors"
-                  >
-                    <LogIn className="w-5 h-5" />
-                    <span>Sign In</span>
-                  </button>
-                )}
+                {/* Auth minimized temporarily due to database issues */}
+                {/* user ? (...) : (...) */}
               </div>
             </motion.div>
           </>

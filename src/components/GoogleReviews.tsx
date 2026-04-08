@@ -19,15 +19,15 @@ export default function GoogleReviews() {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed left-6 bottom-6 z-50">
+      <div className="fixed left-4 sm:left-6 bottom-4 sm:bottom-6 z-50">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-white text-zinc-900 shadow-2xl flex items-center gap-3 py-3 px-5 rounded-full hover:shadow-brand/20 transition-all duration-300 border border-zinc-200 group"
+          className="bg-white text-zinc-900 shadow-2xl flex items-center gap-2 sm:gap-3 py-2.5 sm:py-3 px-4 sm:px-5 rounded-full hover:shadow-brand/20 transition-all duration-300 border border-zinc-200 group"
         >
-          <GoogleLogo className="w-6 h-6 group-hover:scale-110 transition-transform" />
-          <span className="font-bold text-sm whitespace-nowrap">Google Reviews</span>
+          <GoogleLogo className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+          <span className="font-bold text-xs sm:text-sm whitespace-nowrap">Google Reviews</span>
         </motion.button>
       </div>
 
@@ -39,7 +39,7 @@ export default function GoogleReviews() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-6 bottom-24 z-[60] w-[380px] max-h-[70vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200"
+            className="fixed left-4 sm:left-6 bottom-20 sm:bottom-24 z-[60] w-[calc(100vw-2rem)] sm:w-[380px] max-w-[380px] max-h-[70vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-zinc-200"
           >
             {/* Header */}
             <div className="p-5 border-b border-zinc-100 flex items-start justify-between bg-white shrink-0">

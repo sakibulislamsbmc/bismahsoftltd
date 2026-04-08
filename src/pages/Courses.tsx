@@ -81,7 +81,16 @@ export default function Courses() {
   const [transactionId, setTransactionId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [pendingCourse, setPendingCourse] = useState<typeof fallbackCourses[0] | null>(null);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    mobile: '',
+    email: '',
+    division: '',
+    district: '',
+    upazila: '',
+    union: '',
+    nid: ''
+  });
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -107,21 +116,11 @@ export default function Courses() {
     fetchCourses();
   }, []);
 
-  useEffect(() => {
-    if (user && pendingCourse) {
-      setSelectedCourse(pendingCourse);
-      setStep(1);
-      setIsModalOpen(true);
-      setPendingCourse(null);
-    }
-  }, [user, pendingCourse]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const openModal = async (course: typeof fallbackCourses[0]) => {
-    if (!user) {
-      setPendingCourse(course);
-      openAuthModal();
-      return;
-    }
     setSelectedCourse(course);
     setStep(1);
     setIsModalOpen(true);
@@ -145,15 +144,30 @@ export default function Courses() {
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !selectedCourse || !transactionId) return;
+    if (!selectedCourse || !transactionId) return;
     
     setIsSubmitting(true);
     try {
       // Clean price string to number (e.g. '৳5,000' -> 5000)
       const priceValue = parseFloat(selectedCourse.price.replace(/[^0-9.]/g, ''));
       
+      // Generate a user ID if not logged in
+      const userRef = doc(collection(db, 'users'));
+      const userId = user?.uid || userRef.id;
+
+      if (!user) {
+        // Create a basic user document for the guest
+        await setDoc(doc(db, 'users', userId), {
+          email: formData.email,
+          username: formData.fullName,
+          phone: formData.mobile,
+          role: 'user',
+          createdAt: new Date().toISOString()
+        });
+      }
+      
       // 1. Save Course Enrollment
-      const newCourseRef = doc(collection(db, `users/${user.uid}/courses`));
+      const newCourseRef = doc(collection(db, `users/${userId}/courses`));
       await setDoc(newCourseRef, {
         id: newCourseRef.id,
         courseId: selectedCourse.id,
@@ -162,11 +176,11 @@ export default function Courses() {
         progress: 0,
         nextLesson: 'Introduction',
         enrolledAt: new Date().toISOString(),
-        userId: user.uid
+        userId: userId
       });
 
       // 2. Save Transaction
-      const newTxnRef = doc(collection(db, `users/${user.uid}/transactions`));
+      const newTxnRef = doc(collection(db, `users/${userId}/transactions`));
       await setDoc(newTxnRef, {
         id: newTxnRef.id,
         transactionId: transactionId,
@@ -176,8 +190,9 @@ export default function Courses() {
         date: new Date().toISOString().split('T')[0],
         status: 'Pending',
         createdAt: new Date().toISOString(),
-        userId: user.uid,
-        courseDocId: newCourseRef.id
+        userId: userId,
+        courseDocId: newCourseRef.id,
+        userDetails: formData // Save the form data with the transaction
       });
 
       setStep(4); // Proceed to success screen
@@ -362,17 +377,17 @@ export default function Courses() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-zinc-300">Full Name</label>
-                        <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="John Doe" />
+                        <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="John Doe" />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-zinc-300">Mobile Number</label>
-                        <input required type="tel" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="+880 1XXX XXXXXX" />
+                        <input required type="tel" name="mobile" value={formData.mobile} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="+880 1XXX XXXXXX" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-zinc-300">Email Address</label>
-                      <input required type="email" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="john@example.com" />
+                      <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="john@example.com" />
                     </div>
 
                     <div className="pt-4 border-t border-white/10">
@@ -380,26 +395,26 @@ export default function Courses() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-zinc-300">Division</label>
-                          <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Dhaka" />
+                          <input required type="text" name="division" value={formData.division} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Dhaka" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-zinc-300">District</label>
-                          <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Dhaka" />
+                          <input required type="text" name="district" value={formData.district} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Dhaka" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-zinc-300">Upazila / Municipality</label>
-                          <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Mirpur" />
+                          <input required type="text" name="upazila" value={formData.upazila} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Mirpur" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-zinc-300">Union Council / Ward No.</label>
-                          <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Ward 14" />
+                          <input required type="text" name="union" value={formData.union} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="Ward 14" />
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2 pt-4 border-t border-white/10">
                       <label className="text-sm font-medium text-zinc-300">National ID (NID) Number</label>
-                      <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="1234567890" />
+                      <input required type="text" name="nid" value={formData.nid} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all" placeholder="1234567890" />
                     </div>
 
                     <div className="pt-6">
