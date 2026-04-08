@@ -4,6 +4,7 @@ import Footer from './Footer';
 import WhatsAppWidget from './WhatsAppWidget';
 import PromoPopup from './PromoPopup';
 import AuthModal from './AuthModal';
+import GoogleReviews from './GoogleReviews';
 import { motion, useScroll, useSpring } from 'motion/react';
 
 export default function Layout() {
@@ -28,6 +29,7 @@ export default function Layout() {
       </main>
       <Footer />
       <WhatsAppWidget />
+      <GoogleReviews />
       <PromoPopup />
       <AuthModal />
     </div>
