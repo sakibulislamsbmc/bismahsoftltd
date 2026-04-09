@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { ArrowRight, CheckCircle2, TrendingUp, Users, MessageSquare, Target, Zap, BarChart3, Eye, Layers, PenTool, Rocket } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useContentCollection } from '../hooks/useContentCollection';
@@ -71,6 +71,28 @@ export default function Home() {
   const { data: methodologySteps } = useContentCollection('homepage_methodology', defaultMethodologySteps);
   const { data: teamMembers } = useContentCollection('team_members', defaultTeamMembers);
 
+  // Mouse tracking state
+  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
+
+  // Smooth springs for the trailer
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+
+  // Smooth springs for the background magnetic glow
+  const bgSpringX = useSpring(mouseX, { stiffness: 40, damping: 30 });
+  const bgSpringY = useSpring(mouseY, { stiffness: 40, damping: 30 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
   useEffect(() => {
     const updateTeamMembers = async () => {
       try {
@@ -106,7 +128,39 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="space-y-24 pb-24">
+    <div className="space-y-24 pb-24 relative">
+      {/* Magnetic Background Glow */}
+      <motion.div
+        className="fixed top-0 left-0 w-[800px] h-[800px] rounded-full pointer-events-none z-0 mix-blend-screen opacity-40 hidden md:block"
+        style={{
+          x: bgSpringX,
+          y: bgSpringY,
+          translateX: '-50%',
+          translateY: '-50%',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0) 70%)',
+        }}
+      />
+
+      {/* Mouse Trailer */}
+      <motion.div
+        className="fixed top-0 left-0 w-8 h-8 border border-brand/50 rounded-full pointer-events-none z-[100] hidden md:block"
+        style={{
+          x: springX,
+          y: springY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+      />
+      <motion.div
+        className="fixed top-0 left-0 w-2 h-2 bg-brand rounded-full pointer-events-none z-[100] hidden md:block"
+        style={{
+          x: mouseX,
+          y: mouseY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+      />
+
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-20 overflow-hidden">
         {/* Network Pattern Background */}

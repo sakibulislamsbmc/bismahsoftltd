@@ -30,14 +30,14 @@ export const teamMembers = [
     social: { linkedin: '#', twitter: '#', email: 'shahin@bismahsoft.com' }
   },
   {
-    id: 'julkar-naeem',
-    name: 'Julkar Naeem',
-    title: 'Director (Sourcing)',
-    desc: 'Expert in global sourcing and supply chain management',
-    image: 'https://picsum.photos/seed/julkar/200/200',
-    expertise: ['Supply Chain Management', 'Vendor Relations', 'Logistics'],
-    education: 'MSc in Supply Chain Management',
-    social: { linkedin: '#', twitter: '#', email: 'julkar@bismahsoft.com' }
+    id: 'nazmin-nahar',
+    name: 'NAZMIN NAHAR',
+    title: 'Graphic Designer',
+    desc: 'Creating stunning visual compositions and brand identities',
+    image: 'https://image2url.com/r2/default/images/1775665076012-4a05c3f2-bc50-40f3-b181-16df7734a71b.png',
+    expertise: ['Visual Design', 'Illustration', 'Typography'],
+    education: 'Study in Rajshahi College BSC in physics',
+    social: { linkedin: '#', twitter: '#', email: 'nazmin@bismahsoft.com' }
   },
   {
     id: 'atik-hasan',
