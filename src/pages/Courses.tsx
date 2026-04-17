@@ -10,11 +10,11 @@ export const fallbackCourses = [
     id: 'graphic-design-ai',
     title: 'Advanced Graphic Design with AI Tools',
     description: 'Master the art of modern graphic design by integrating powerful AI tools into your workflow. Learn to create stunning visuals faster and more efficiently.',
-    image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop',
+    image: 'https://www.image2url.com/r2/default/images/1776432293871-131e44b2-e90e-436f-8f16-49f59f824e49.png',
     duration: '3 Months',
     students: '1.2k+',
     rating: '4.9',
-    price: '৳5,000',
+    price: '৳6,000',
     level: 'Intermediate to Advanced',
     features: [
       'Mastering Adobe Creative Cloud',
@@ -98,8 +98,19 @@ export default function Courses() {
         const snap = await getDocs(collection(db, 'content_courses'));
         if (!snap.empty) {
           const data: any[] = [];
-          snap.forEach(doc => {
-            data.push({ id: doc.id, ...doc.data() });
+          snap.forEach(document => {
+            const docData = document.data();
+            if (docData.title === 'Advanced Graphic Design with AI Tools') {
+              import('firebase/firestore').then(({ updateDoc }) => {
+                updateDoc(doc(db, 'content_courses', document.id), {
+                  price: '৳6,000',
+                  image: 'https://www.image2url.com/r2/default/images/1776432293871-131e44b2-e90e-436f-8f16-49f59f824e49.png'
+                });
+              });
+              docData.price = '৳6,000';
+              docData.image = 'https://www.image2url.com/r2/default/images/1776432293871-131e44b2-e90e-436f-8f16-49f59f824e49.png';
+            }
+            data.push({ id: document.id, ...docData });
           });
           setCourses(data);
         } else {
@@ -313,16 +324,31 @@ export default function Courses() {
                     <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Course Fee</div>
                     <div className="text-3xl font-display font-bold text-white">{course.price}</div>
                   </div>
-                  <button
-                    onClick={() => openModal(course)}
-                    className={`px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
-                      course.popular 
-                        ? 'bg-brand text-zinc-950 hover:bg-white' 
-                        : 'bg-white/10 text-white hover:bg-white/20'
-                    }`}
-                  >
-                    Enroll <ArrowRight className="w-4 h-4" />
-                  </button>
+                  {course.id === 'graphic-design-ai' || course.title === 'Advanced Graphic Design with AI Tools' ? (
+                    <a
+                      href="https://learndesignwithsabbir.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
+                        course.popular 
+                          ? 'bg-brand text-zinc-950 hover:bg-white' 
+                          : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                    >
+                      Enroll <ArrowRight className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => openModal(course)}
+                      className={`px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
+                        course.popular 
+                          ? 'bg-brand text-zinc-950 hover:bg-white' 
+                          : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                    >
+                      Enroll <ArrowRight className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>

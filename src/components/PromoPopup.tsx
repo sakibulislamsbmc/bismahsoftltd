@@ -112,22 +112,26 @@ export default function PromoPopup() {
                   </motion.p>
 
                   <motion.div variants={textItemVariants} className="flex flex-col sm:flex-row gap-4 mb-10">
-                    <Link
-                      to="/courses"
+                    <a
+                      href="https://learndesignwithsabbir.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setIsOpen(false)}
                       className="group relative flex-1 bg-brand hover:bg-[#1ebd5c] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center space-x-2 transition-all duration-300 shadow-lg shadow-brand/20 hover:shadow-brand/40 hover:-translate-y-0.5"
                     >
                       <span className="relative z-10 text-lg">Apply Now</span>
                       <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                    <Link
-                      to="/courses"
+                    </a>
+                    <a
+                      href="https://learndesignwithsabbir.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setIsOpen(false)}
                       className="group flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center space-x-2 transition-all duration-300 hover:-translate-y-0.5"
                     >
                       <Info className="w-5 h-5 text-zinc-400 group-hover:text-white transition-colors" />
                       <span className="text-lg">More Details</span>
-                    </Link>
+                    </a>
                   </motion.div>
 
                   {/* Contact Section */}
