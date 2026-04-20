@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { teamMembers } from '../data/team';
-import { ArrowLeft, Linkedin, Twitter, Mail, GraduationCap, Briefcase, Award } from 'lucide-react';
+import { ArrowLeft, Linkedin, Twitter, Facebook, Mail, GraduationCap, Briefcase, Award } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function TeamMember() {
@@ -39,15 +39,26 @@ export default function TeamMember() {
             />
           </div>
           <div className="flex justify-center space-x-4">
-            <a href={member.social.linkedin} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
-              <Linkedin className="w-5 h-5" />
-            </a>
-            <a href={member.social.twitter} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a href={`mailto:${member.social.email}`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
-              <Mail className="w-5 h-5" />
-            </a>
+            {member.social.linkedin && member.social.linkedin !== '#' && (
+              <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+            {member.social.facebook && member.social.facebook !== '#' && (
+              <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+            )}
+            {member.social.twitter && member.social.twitter !== '#' && (
+              <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+            )}
+            {member.social.email && (
+              <a href={`mailto:${member.social.email}`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:bg-brand hover:text-white transition-colors">
+                <Mail className="w-5 h-5" />
+              </a>
+            )}
           </div>
         </motion.div>
 

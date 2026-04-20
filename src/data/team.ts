@@ -40,14 +40,18 @@ export const teamMembers = [
     social: { linkedin: '#', twitter: '#', email: 'nazmin@bismahsoft.com' }
   },
   {
-    id: 'atik-hasan',
-    name: 'Atik Hasan',
-    title: 'Senior Graphics Designer',
-    desc: 'Creating stunning visual compositions and brand identities',
-    image: 'https://picsum.photos/seed/atik/200/200',
-    expertise: ['Visual Design', 'Illustration', 'Typography'],
-    education: 'Diploma in Fine Arts',
-    social: { linkedin: '#', twitter: '#', email: 'atik@bismahsoft.com' }
+    id: 'alomgir-hossain',
+    name: 'ALOMGIR HOSSAIN',
+    title: 'Customer Relationship Manager (CRM)',
+    desc: 'Expert Communication Specialist and management professional focused on visual direction and product promotion scripting.',
+    image: 'https://www.image2url.com/r2/default/images/1776698035019-ca0ea8f1-5d66-4add-b91e-98b807656823.jpg',
+    expertise: ['Communication Specialist', 'Management', 'Visual and content direction', 'Product promotion scripting'],
+    education: 'Study in University of Rajshahi. Department of Theatre.',
+    social: { 
+      linkedin: 'https://www.linkedin.com/alomgirhossain.ru', 
+      facebook: 'https://www.facebook.com/share/1FDMEC3jAz/', 
+      email: 'alomgirhossain.ru@gmail.com' 
+    }
   },
   {
     id: 'limon-mostafiz',
