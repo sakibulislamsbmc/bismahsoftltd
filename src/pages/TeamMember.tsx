@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { teamMembers } from '../data/team';
-import { ArrowLeft, Linkedin, Twitter, Facebook, Mail, GraduationCap, Briefcase, Award } from 'lucide-react';
+import { ArrowLeft, Linkedin, Twitter, Facebook, Mail, GraduationCap, Briefcase, Award, Share2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function TeamMember() {
@@ -68,9 +68,26 @@ export default function TeamMember() {
           animate={{ opacity: 1, x: 0 }}
           className="md:col-span-2 space-y-8"
         >
-          <div>
-            <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-2">{member.name}</h1>
-            <p className="text-xl text-brand font-medium">{member.title}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-4xl md:text-7xl font-stylish font-extrabold text-brand uppercase tracking-tighter mb-2">{member.name}</h1>
+              <p className="text-xl text-white/60 font-medium tracking-wide">{member.title}</p>
+            </div>
+            <button
+              onClick={() => {
+                const url = window.location.href;
+                const text = `Check out ${member.name}'s profile at Bismahsoft Ltd.`;
+                if (navigator.share) {
+                  navigator.share({ title: member.name, text, url });
+                } else {
+                  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                }
+              }}
+              className="inline-flex items-center space-x-2 bg-brand/10 hover:bg-brand text-brand hover:text-white px-6 py-3 rounded-full font-bold transition-all border border-brand/20"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Share Profile</span>
+            </button>
           </div>
 
           <div className="prose prose-invert max-w-none">

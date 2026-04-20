@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Target, Users, Zap, Heart, Shield, Award } from 'lucide-react';
+import { Target, Users, Zap, Heart, Shield, Award, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { teamMembers as defaultTeamMembers } from '../data/team';
 import { useContentCollection } from '../hooks/useContentCollection';
@@ -92,7 +92,7 @@ export default function About() {
                       className="w-24 h-24 rounded-full object-cover mb-4 border-2 border-transparent group-hover:border-brand/50 transition-all"
                       referrerPolicy="no-referrer"
                     />
-                    <h3 className="text-lg font-bold text-white mb-1">
+                    <h3 className="text-xl font-stylish font-bold text-brand uppercase tracking-tighter mb-2">
                       {member.name}
                     </h3>
                     <p className="text-brand text-sm font-medium mb-3">
@@ -101,6 +101,23 @@ export default function About() {
                     <p className="text-zinc-400 text-xs leading-relaxed">
                       {member.desc}
                     </p>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const url = `${window.location.origin}/team/${member.id}`;
+                        const text = `Check out ${member.name}'s profile at Bismahsoft Ltd.`;
+                        if (navigator.share) {
+                          navigator.share({ title: member.name, text, url });
+                        } else {
+                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                        }
+                      }}
+                      className="mt-6 flex items-center space-x-2 text-xs font-bold text-brand hover:text-white transition-colors group/share"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>Share Profile</span>
+                    </button>
                   </div>
                 </Link>
               </motion.div>

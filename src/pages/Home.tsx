@@ -462,7 +462,7 @@ export default function Home() {
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <h3 className="text-2xl font-display font-bold uppercase tracking-tight mb-1 text-white">
+              <h3 className="text-2xl font-stylish font-bold uppercase tracking-tighter mb-1 text-brand">
                 {member.name}
               </h3>
               <p className="text-brand font-medium text-sm uppercase tracking-widest">
